@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Disco Project Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a, #000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+            animation: backgroundPulse 10s infinite alternate;
+        }
+
+        @keyframes backgroundPulse {
+            0% { background: radial-gradient(circle at center, #1a1a1a, #000); }
+            50% { background: radial-gradient(circle at center, #2a0a2a, #000); }
+            100% { background: radial-gradient(circle at center, #0a2a2a, #000); }
+        }
+
+        .disco-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(5deg); }
+            50% { transform: translateY(-20px) rotateX(-5deg); }
+        }
+
+        .project-button {
+            position: relative;
+            width: 220px;
+            height: 90px;
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 204, 0.7));
+            will-change: transform, box-shadow;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .button-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 0, 204, 0.6);
+            transform: translateZ(20px);
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+        }
+
+        /* Hover Effects */
+        .project-button:hover {
+            transform: translateZ(50px) scale(1.15) rotateX(-15deg) rotateY(15deg);
+            box-shadow: 0 0 50px rgba(255, 59, 216, 0.9);
+            z-index: 10;
+        }
+
+        .project-button:hover .button-face {
+            transform: translateZ(30px);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        }
+
+        .project-button:active {
+            transform: translateZ(30px) scale(0.98);
+        }
+
+        /* Link Styling */
+        a {
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Star Background */
+        #stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .disco-container {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .project-button {
+                width: 160px;
+                height: 70px;
+            }
+
+            .button-face {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <div class="disco-container">
+        <a href="https://www.youtube.com/" target="_blank">
+            <div class="project-button" onclick="navigateButton(this, event)">
+                <div class="button-face">Project 1</div>
+            </div>
+        </a>
+        <a href="https://example.com/project2" target="_blank">
+            <div class="project-button" onclick="navigateButton(this, event)">
+                <div class="button-face">Project 2</div>
+            </div>
+        </a>
+        <a href="https://example.com/project3" target="_blank">
+            <div class="project-button" onclick="navigateButton(this, event)">
+                <div class="button-face">Project 3</div>
+            </div>
+        </a>
+        <a href="https://example.com/project4" target="_blank">
+            <div class="project-button" onclick="navigateButton(this, event)">
+                <div class="button-face">Project 4</div>
+            </div>
+        </a>
+    </div>
+
+    <script>
+        // Navigate Button Functionality with Delayed Navigation
+        function navigateButton(button, event) {
+            event.preventDefault(); // Prevent immediate navigation
+            const link = button.parentElement.href; // Get the link from the <a> tag
+            setTimeout(() => {
+                window.open(link, '_blank'); // Open link in new tab
+            }, 300); // Delay to allow hover animation
+        }
+
+        // Twinkling Stars Background
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const starsArray = [];
+        const numberOfStars = 150;
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.6;
+                this.baseOpacity = Math.random() * 0.8 + 0.3;
+                this.speedX = Math.random() * 0.1 - 0.05;
+                this.speedY = Math.random() * 0.1 - 0.05;
+                this.twinkleSpeed = Math.random() * 0.13 + 0.11;
+                this.twinklePhase = Math.random() * Math.PI * 2;
+                this.twinkleAmplitude = Math.random() * 3 + 0.11;
+                this.isTwinkling = Math.random() > 0.7;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+                if (this.isTwinkling) {
+                    this.opacity = this.baseOpacity + Math.sin(Date.now() * this.twinkleSpeed + this.twinklePhase) * this.twinkleAmplitude;
+                } else {
+                    this.opacity = this.baseOpacity;
+                    if (Math.random() < 0.01) this.isTwinkling = true;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < numberOfStars; i++) {
+                starsArray.push(new Star());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < starsArray.length; i++) {
+                starsArray[i].update();
+                starsArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
